@@ -1,0 +1,101 @@
+{
+  "_description": "GWR Pipeline Configuration Template. Copy and customize for your project.",
+  "_usage": "python scripts/master_pipeline.py this_config.json [--steps grid,gwr_fit,gwr_predict]",
+
+  "output_gdb": "D:/YourProject/YourOutput.gdb",
+  "output_gpkg": "D:/YourProject/YourOutput.gpkg",
+  "crs": "EPSG:2326",
+  "steps": ["grid", "gwr_fit", "gwr_predict"],
+
+  "field_mapping": {
+    "_doc": "Explicit field names for your datasets. Scripts auto-detect using these as fallback.",
+    "population_count": "Averag_pop",
+    "building_elevation": "Elevation",
+    "building_id": "OBJECTID",
+    "poi_midtype": "midType",
+    "road_length": "Shape_Leng",
+    "road_travel_time": null,
+    "census_block_id": "ssbg",
+    "census_block_name": "ssbg_eng"
+  },
+
+  "poi_classification": {
+    "_note": "Optional. Reclassify POIs by time-of-day operation.",
+    "poi_layers": {
+      "commercial": "D:/data/poi_commercial.gpkg",
+      "community":  "D:/data/poi_community.gpkg",
+      "sports_rec": "D:/data/poi_sports_rec.gpkg"
+    },
+    "midtype_field": "midType",
+    "day_set": ["公司","银行","学校"],
+    "night_set": ["休闲餐饮场所","茶艺馆"],
+    "both_set": ["中餐厅","咖啡馆","诊所"]
+  },
+
+  "dasymetric": {
+    "_note": "Optional. Allocate census population to building footprints by height.",
+    "pop_fc": "D:/data/HK_population.gpkg",
+    "bldg_fc": "D:/data/Site_buildings.gpkg",
+    "pop_field": null,
+    "elev_field": null,
+    "_field_comment": "Leave null to use field_mapping.population_count / building_elevation",
+    "fallback_height": 3.0
+  },
+
+  "grid": {
+    "_note": "Create fishnet grid + join population, POI, road density indicators.",
+    "site_fc": "D:/data/Designsite.shp",
+    "poi_fc": null,
+    "_poi_fc_comment": "If null, uses result from step 1 (poi_all_time_classified in GDB)",
+    "pop_fc": "D:/data/HK_population.gpkg",
+    "roads_fc": "D:/data/HK_roads.gpkg",
+    "cell_size": 50,
+    "study_buffer": 1500,
+    "pop_field": null,
+    "road_length_field": null,
+    "_fields_comment": "Leave null to use field_mapping.population_count / road_length"
+  },
+
+  "gwr": {
+    "_note": "Fit Geographically Weighted Regression model.",
+    "_doc": "Dependent var = facility density (poi_count). Explanatory vars = built-environment indicators.",
+    "grid_active": null,
+    "_grid_active_comment": "If null, uses grid_active_cells from step 3",
+    "dependent": "poi_count",
+    "explanatory": ["pop_density", "road_density"],
+    "output_name": "gwr_results",
+    "neighborhood_type": "NUMBER_OF_NEIGHBORS",
+    "selection_method": "GOLDEN_SEARCH",
+    "_selection_method_options": ["GOLDEN_SEARCH", "MANUAL_INTERVALS", "USER_DEFINED"],
+    "min_neighbors": 30,
+    "num_neighbors": null,
+    "_num_neighbors_comment": "Only used with USER_DEFINED selection method",
+    "scale_data": true
+  },
+
+  "prediction": {
+    "_note": "Predict future facility distribution using fitted GWR model.",
+    "grid_active": null,
+    "prediction_fc": "D:/data/grid_future_2033.gpkg",
+    "dependent": "poi_count",
+    "explanatory": ["pop_density", "road_density"],
+    "output_name": "gwr_prediction_future",
+    "neighborhood_type": "NUMBER_OF_NEIGHBORS",
+    "num_neighbors": null
+  },
+
+  "network": {
+    "_note": "Optional. Pedestrian flow assignment + gap detection.",
+    "site_fc": "D:/data/Designsite.shp",
+    "roads_fc": "D:/data/HK_roads.gpkg",
+    "pop_fc": "D:/data/HK_population.gpkg",
+    "pop_field": null,
+    "road_length_field": null,
+    "road_travel_time_field": null,
+    "_fields_comment": "Leave null to use field_mapping defaults",
+    "program_type": "Sports Centre",
+    "walkway_width": 3.0,
+    "clip_buffer": 600,
+    "gap_threshold": 1.4
+  }
+}

@@ -1,0 +1,18 @@
+# ArcGIS lock files
+*.lock
+*.gdb/
+*.gpkg-wal
+*.gpkg-shm
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# Output (user projects)
+*.gdb/
+output/

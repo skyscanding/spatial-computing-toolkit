@@ -1,0 +1,11 @@
+# GWR Pipeline — Python Dependencies
+# ====================================
+# Core: arcpy is bundled with ArcGIS Pro (no pip install).
+# Install the rest into your arcgispro-py3 environment:
+#
+#   "C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe" -m pip install -r requirements.txt
+
+numpy>=1.24
+scipy>=1.10
+networkx>=3.0
+shapely>=2.0
