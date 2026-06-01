@@ -112,7 +112,7 @@ Both tools were developed for the **Tung Chung Tat Tung Road Bus Terminus** desi
 
 # 中文说明
 
-城市空间计算研究的 GIS 分析工具包 —— 基于 **香港东涌 TOD** 案例开发与验证。
+城市空间计算研究的 GIS 分析工具包，基于 **香港东涌 TOD** 案例开发与验证。
 
 ## 包含工具
 
